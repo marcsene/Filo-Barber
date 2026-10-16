@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FILO BARBER - Barbería en Melipilla</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#121212',
+                        brandCard: '#1a1a1a',
+                        brandCream: '#f2efe9',
+                        brandGold: '#d4af37',
+                        brandGoldHover: '#b5932a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #6f6464;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-gray-100 font-sans min-h-screen flex flex-col selection:bg-brandGold selection:text-black">
+
+    <!-- Header / Navbar -->
+    <nav class="bg-black/80 backdrop-blur-md border-b border-brandGold/30 sticky top-0 z-40 px-4 py-3 transition-all duration-300">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- SVG Blade Icon -->
+                <div class="w-10 h-10 bg-brandCream rounded-lg flex items-center justify-center p-1.5 shadow-md">
+                    <svg viewBox="0 0 100 100" class="w-full h-full fill-black">
+                        <path d="M15,20 L85,20 L85,35 L15,35 Z M15,40 L70,40 C75,40 80,45 80,50 L80,55 C80,60 75,65 70,65 L15,65 Z M75,50 A5,5 0 1,1 75,50.1" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-widest text-brandCream leading-none font-serif">FILO</h1>
+                    <span class="text-xs tracking-[0.3em] text-brandGold font-bold uppercase block">Barber</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <a href="#reservas" class="hidden sm:inline-block bg-brandGold hover:bg-brandGoldHover text-black font-bold text-xs uppercase px-4 py-2 rounded-lg transition-all shadow-lg transform hover:-translate-y-0.5">
+                    Reservar Cita
+                </a>
+                <button onclick="toggleAdminModal()" class="bg-neutral-800 hover:bg-neutral-700 text-brandCream text-xs font-semibold px-3 py-2 rounded-lg border border-brandGold/20 flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-lock text-brandGold"></i>
+                    <span id="adminBtnText">Modo Admin</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner Notificación Toast -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-32 opacity-0 transition-all duration-500 max-w-sm w-full bg-neutral-900 border-l-4 border-brandGold p-4 rounded-r-lg shadow-2xl flex items-start gap-3">
+        <div id="toastIcon" class="text-brandGold text-xl pt-0.5">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="flex-1">
+            <h4 id="toastTitle" class="font-bold text-brandCream text-sm">Notificación</h4>
+            <p id="toastMessage" class="text-xs text-gray-300 mt-0.5">Detalles del aviso</p>
+        </div>
+        <button onclick="hideToast()" class="text-gray-500 hover:text-white text-xs">
+            <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+        <!-- HERO SECTION -->
+        <section class="relative bg-gradient-to-b from-black via-neutral-900 to-brandDark py-12 md:py-20 px-4 border-b border-neutral-800">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brandGold/10 border border-brandGold/30 text-brandGold text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-scissors"></i> La Barbería #1 de Melipilla
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-brandCream tracking-tight font-serif leading-none">
+                        FILO <span class="text-brandGold">BARBER</span>
+                    </h1>
+                    
+                    <p class="text-xl sm:text-2xl font-light text-gray-300 italic">
+                        "Los mejores Barbershop de Melipilla y barato"
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 text-sm text-gray-400 pt-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-brandGold"></i>
+                            <span>Av. Vicuña Mackenna #123, Melipilla</span>
+                        </div>
+                        <span class="hidden sm:inline text-neutral-600">•</span>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-brandGold"></i>
+                            <span>Lun - Dom: 08:00 AM - 09:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex flex-wrap justify-center lg:justify-start gap-4">
+                        <a href="#reservas" class="bg-brandGold hover:bg-brandGoldHover text-black font-bold px-8 py-3.5 rounded-xl shadow-xl transition-all transform hover:-translate-y-1 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar-check text-lg"></i>
+                            Reservar Ahora
+                        </a>
+                        <a href="#catalogo" class="bg-neutral-800 hover:bg-neutral-700 text-brandCream font-semibold px-6 py-3.5 rounded-xl border border-neutral-700 transition-all flex items-center gap-2">
+                            Ver Cortes
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brandGold to-amber-700 opacity-30 blur"></div>
+                        <div class="relative rounded-2xl overflow-hidden border border-brandGold/30 bg-neutral-900 shadow-2xl group">
+                            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Barbero cortando el pelo a un cliente" 
+                                 class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                 onerror="this.src='https://placehold.co/800x600/1e1e1e/d4af37?text=FILO+BARBER'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                            <div class="absolute bottom-4 left-4 right-4 p-4 bg-black/60 backdrop-blur-sm rounded-xl border border-white/10">
+                                <p class="text-xs text-brandGold uppercase font-semibold">Experiencia y Precisión</p>
+                                <p class="text-sm font-medium text-white">Estilo moderno, navaja afilada y la mejor atención de la zona.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CATÁLOGO DE CORTES -->
+        <section id="catalogo" class="py-16 px-4 max-w-6xl mx-auto">
+            <div class="text-center space-y-2 mb-12">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brandCream font-serif">Catálogo de Servicios</h2>
+                <div class="w-16 h-1 bg-brandGold mx-auto rounded-full"></div>
+                <p class="text-gray-400 text-sm max-w-md mx-auto">Elige tu estilo preferido para reservarlo en tu cita.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1 -->
+                <div onclick="selectService('Corte Degradado (Fade)')" class="bg-brandCard rounded-xl overflow-hidden border border-neutral-800 hover:border-brandGold/50 transition-all duration-300 shadow-lg group cursor-pointer flex flex-col justify-between">
+                    <div class="relative overflow-hidden h-52">
+                        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=500&q=80" 
+                             alt="Degradado Fade" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/500x400/1a1a1a/d4af37?text=Degradado+Fade'">
+                        <span class="absolute top-3 right-3 bg-black/80 text-brandGold font-bold text-xs px-3 py-1 rounded-full border border-brandGold/30">
+                            Popular
+                        </span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-brandCream group-hover:text-brandGold transition-colors">Degradado (Fade)</h3>
+                            <p class="text-xs text-gray-400 mt-2">Corte degradado bajo, medio o alto con acabados limpios.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-neutral-800 flex justify-between items-center">
+                            <span class="text-xs text-brandGold font-medium"><i class="fa-solid fa-scissors mr-1"></i> Seleccionar</span>
+                            <i class="fa-solid fa-arrow-right text-gray-500 group-hover:text-brandGold group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="selectService('Corte con Diseño')" class="bg-brandCard rounded-xl overflow-hidden border border-neutral-800 hover:border-brandGold/50 transition-all duration-300 shadow-lg group cursor-pointer flex flex-col justify-between">
+                    <div class="relative overflow-hidden h-52">
+                        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=500&q=80" 
+                             alt="Corte con Diseño" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/500x400/1a1a1a/d4af37?text=Corte+con+Diseno'">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-brandCream group-hover:text-brandGold transition-colors">Corte con Diseño</h3>
+                            <p class="text-xs text-gray-400 mt-2">Líneas, formas personalizadas y arte en cabello con navaja fina.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-neutral-800 flex justify-between items-center">
+                            <span class="text-xs text-brandGold font-medium"><i class="fa-solid fa-scissors mr-1"></i> Seleccionar</span>
+                            <i class="fa-solid fa-arrow-right text-gray-500 group-hover:text-brandGold group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="selectService('Corte Clásico')" class="bg-brandCard rounded-xl overflow-hidden border border-neutral-800 hover:border-brandGold/50 transition-all duration-300 shadow-lg group cursor-pointer flex flex-col justify-between">
+                    <div class="relative overflow-hidden h-52">
+                        <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=500&q=80" 
+                             alt="Corte Clásico" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/500x400/1a1a1a/d4af37?text=Corte+Clasico'">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-brandCream group-hover:text-brandGold transition-colors">Corte Clásico</h3>
+                            <p class="text-xs text-gray-400 mt-2">Estilo tradicional a tijera o máquina, sobrio y elegante.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-neutral-800 flex justify-between items-center">
+                            <span class="text-xs text-brandGold font-medium"><i class="fa-solid fa-scissors mr-1"></i> Seleccionar</span>
+                            <i class="fa-solid fa-arrow-right text-gray-500 group-hover:text-brandGold group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div onclick="selectService('Combo Corte + Barba')" class="bg-brandCard rounded-xl overflow-hidden border border-neutral-800 hover:border-brandGold/50 transition-all duration-300 shadow-lg group cursor-pointer flex flex-col justify-between">
+                    <div class="relative overflow-hidden h-52">
+                        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=500&q=80" 
+                             alt="Combo Corte y Barba" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/500x400/1a1a1a/d4af37?text=Combo+Corte+Barba'">
+                        <span class="absolute top-3 right-3 bg-brandGold text-black font-extrabold text-xs px-3 py-1 rounded-full">
+                            Recomendado
+                        </span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-brandCream group-hover:text-brandGold transition-colors">Combo Corte + Barba</h3>
+                            <p class="text-xs text-gray-400 mt-2">Corte de pelo completo más perfilado y ritual de barba.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-neutral-800 flex justify-between items-center">
+                            <span class="text-xs text-brandGold font-medium"><i class="fa-solid fa-scissors mr-1"></i> Seleccionar</span>
+                            <i class="fa-solid fa-arrow-right text-gray-500 group-hover:text-brandGold group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SISTEMA DE RESERVAS -->
+        <section id="reservas" class="py-16 px-4 bg-neutral-900/60 border-y border-neutral-800">
+            <div class="max-w-5xl mx-auto">
+                
+                <div class="text-center space-y-2 mb-10">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-brandCream font-serif">Reserva tu Hora</h2>
+                    <div class="w-16 h-1 bg-brandGold mx-auto rounded-full"></div>
+                    <p class="text-gray-400 text-sm">Selecciona una fecha y un bloque de hora disponible (8:00 AM - 9:00 PM).</p>
+                </div>
+
+                <!-- Leyenda e Indicadores -->
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-brandDark p-4 rounded-xl border border-neutral-800 mb-8">
+                    <div class="flex items-center gap-3 text-xs sm:text-sm">
+                        <label class="font-semibold text-gray-300">Seleccionar Día:</label>
+                        <input type="date" id="bookingDate" onchange="handleDateChange()" class="bg-neutral-800 text-brandCream text-xs sm:text-sm border border-neutral-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-brandGold">
+                    </div>
+
+                    <div class="flex items-center gap-6 text-xs sm:text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                            <span class="text-gray-300 font-medium">🟢 Disponible</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                            <span class="text-gray-400">🔴 Ocupado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grilla de Horarios -->
+                <div id="slotsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10">
+                    <!-- Javascript generará las horas aquí -->
+                </div>
+
+                <!-- FORMULARIO DE CONFIRMACIÓN -->
+                <div class="bg-brandCard border border-neutral-800 rounded-2xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brandGold/5 rounded-full blur-2xl"></div>
+
+                    <h3 class="text-xl font-bold text-brandCream mb-6 flex items-center gap-2 border-b border-neutral-800 pb-3">
+                        <i class="fa-solid fa-address-card text-brandGold"></i>
+                        Datos para la Reserva
+                    </h3>
+
+                    <form id="bookingForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Fecha</label>
+                                <input type="text" id="formDisplayDate" readonly class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-brandGold font-semibold cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Hora Seleccionada</label>
+                                <input type="text" id="formDisplayTime" readonly placeholder="Elige un horario arriba" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-brandGold font-semibold cursor-not-allowed placeholder-gray-600">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Servicio Deseado</label>
+                            <select id="formService" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-brandCream focus:outline-none focus:border-brandGold">
+                                <option value="Corte Degradado (Fade)">Corte Degradado (Fade)</option>
+                                <option value="Corte con Diseño">Corte con Diseño</option>
+                                <option value="Corte Clásico">Corte Clásico</option>
+                                <option value="Combo Corte + Barba">Combo Corte + Barba</option>
+                                <option value="Perfilado de Barba">Perfilado de Barba</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Tu Nombre Completo *</label>
+                            <input type="text" id="clientName" required placeholder="Ej: Juan Pérez" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-brandCream placeholder-gray-600 focus:outline-none focus:border-brandGold">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Teléfono de Contacto *</label>
+                            <input type="tel" id="clientPhone" required placeholder="Ej: +56 9 1234 5678" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-brandCream placeholder-gray-600 focus:outline-none focus:border-brandGold">
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-wider">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                                Reservar y Enviar a WhatsApp
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- HISTORIAL RECIENTE (Simulación en pantalla) -->
+        <section class="py-12 px-4 max-w-4xl mx-auto">
+            <div class="bg-brandCard border border-neutral-800 rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-brandCream uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-brandGold"></i>
+                        Últimas Horas Reservadas
+                    </h3>
+                    <span class="text-xs text-gray-500">En vivo</span>
+                </div>
+                <div id="recentReservationsList" class="space-y-2 text-xs text-gray-300">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-neutral-800 py-8 px-4 text-center text-xs text-gray-500 space-y-3">
+        <div class="flex justify-center items-center gap-2 text-brandCream font-serif font-bold text-base">
+            <span>FILO BARBER</span>
+            <span class="text-brandGold">•</span>
+            <span class="text-xs font-sans font-normal text-gray-400">Melipilla</span>
+        </div>
+        <p>Atención directa vía WhatsApp al <strong class="text-gray-300">+56 9 64579137</strong></p>
+        <p>© 2026 FILO BARBER. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- MODAL MODO ADMINISTRADOR -->
+    <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brandCard border border-brandGold/40 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+            
+            <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Login Admin -->
+            <div id="adminLoginState" class="space-y-4">
+                <div class="text-center space-y-1">
+                    <div class="w-12 h-12 bg-brandGold/10 border border-brandGold/30 text-brandGold rounded-full flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-brandCream">Acceso Administrador</h3>
+                    <p class="text-xs text-gray-400">Ingresa la clave para administrar la disponibilidad de horas.</p>
+                </div>
+
+                <div>
+                    <input type="password" id="adminPasswordInput" placeholder="Clave de acceso (ej: filo2026)" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brandGold">
+                    <p id="adminErrorMsg" class="text-xs text-rose-500 mt-1 hidden">Clave incorrecta. Intenta con 'filo2026'</p>
+                </div>
+
+                <button onclick="authenticateAdmin()" class="w-full bg-brandGold hover:bg-brandGoldHover text-black font-bold py-2.5 rounded-xl text-sm transition-all">
+                    Ingresar
+                </button>
+            </div>
+
+            <!-- Panel Admin Activado -->
+            <div id="adminPanelState" class="space-y-4 hidden">
+                <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <h3 class="text-sm font-bold text-brandCream uppercase">Panel de Control</h3>
+                    </div>
+                    <button onclick="logoutAdmin()" class="text-xs text-rose-400 hover:underline">Cerrar Sesión</button>
+                </div>
+
+                <p class="text-xs text-gray-300">
+                    Haz clic en los bloques de abajo para activar (🟢) o desactivar / bloquear (🔴) las horas del día seleccionado:
+                </p>
+
+                <div id="adminSlotsControlGrid" class="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
+                    <!-- Controladores generados dinámicamente -->
+                </div>
+
+                <div class="pt-2 border-t border-neutral-800">
+                    <button onclick="toggleAdminModal()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-brandCream text-xs font-semibold py-2 rounded-lg">
+                        Cerrar Panel
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // CONFIGURACIÓN E INITIAL STATE
+        const ADMIN_PHONE = "56964579137";
+        const ADMIN_PASS = "filo2026";
+        let isAdminLoggedIn = false;
+
+        // Horarios base de 8 AM a 9 PM (14 slots)
+        const BASE_TIMES = [
+            "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", 
+            "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", 
+            "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", 
+            "08:00 PM", "09:00 PM"
+        ];
+
+        // Almacenamiento de estado por fecha (ej: "2026-10-16": { "08:00 AM": true, ... })
+        let schedulesByDate = {};
+        let selectedDate = "";
+        let selectedTime = null;
+
+        // Lista de reservas recientes simuladas
+        let recentReservations = [
+            { name: "Sebastián M.", service: "Degradado (Fade)", time: "05:00 PM", date: "Hoy" },
+            { name: "Mateo R.", service: "Combo Corte + Barba", time: "03:00 PM", date: "Hoy" }
+        ];
+
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', () => {
+            // Establecer fecha de hoy en el selector
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            selectedDate = `${yyyy}-${mm}-${dd}`;
+            
+            const dateInput = document.getElementById('bookingDate');
+            dateInput.value = selectedDate;
+            dateInput.min = selectedDate; // No seleccionar días pasados
+
+            initScheduleForDate(selectedDate);
+            renderSlots();
+            renderRecentReservations();
+            updateFormDateDisplay();
+        });
+
+        // Garantizar que la fecha tenga horas inicializadas
+        function initScheduleForDate(dateStr) {
+            if (!schedulesByDate[dateStr]) {
+                schedulesByDate[dateStr] = {};
+                BASE_TIMES.forEach((time, idx) => {
+                    // Ocupar por defecto algunas horas para dinamismo
+                    const defaultOccupied = (idx === 2 || idx === 5);
+                    schedulesByDate[dateStr][time] = !defaultOccupied;
+                });
+            }
+        }
+
+        // CAMBIO DE FECHA
+        function handleDateChange() {
+            const dateInput = document.getElementById('bookingDate');
+            selectedDate = dateInput.value;
+            selectedTime = null;
+            document.getElementById('formDisplayTime').value = "";
+            
+            initScheduleForDate(selectedDate);
+            renderSlots();
+            updateFormDateDisplay();
+            showToast("Fecha actualizada", `Mostrando horarios para ${formatDateSpan(selectedDate)}`, "info");
+        }
+
+        function updateFormDateDisplay() {
+            document.getElementById('formDisplayDate').value = formatDateSpan(selectedDate);
+        }
+
+        function formatDateSpan(dateStr) {
+            if (!dateStr) return "";
+            const parts = dateStr.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // RENDERIZAR SLOTS EN PANTALLA
+        function renderSlots() {
+            const container = document.getElementById('slotsGrid');
+            container.innerHTML = '';
+
+            const daySlots = schedulesByDate[selectedDate] || {};
+
+            BASE_TIMES.forEach(time => {
+                const isAvailable = daySlots[time];
+                const isSelected = (selectedTime === time);
+
+                const slotBtn = document.createElement('button');
+                slotBtn.type = 'button';
+                
+                // Clases dinámicas según estado
+                let baseClasses = "relative flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer ";
+                
+                if (isSelected) {
+                    baseClasses += "bg-brandGold text-black border-brandGold shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-105 z-10";
+                } else if (isAvailable) {
+                    baseClasses += "bg-brandCard text-brandCream border-neutral-800 hover:border-emerald-500/50 hover:bg-neutral-800";
+                } else {
+                    baseClasses += "bg-neutral-900/50 text-gray-500 border-neutral-900 cursor-not-allowed opacity-60";
+                }
+
+                slotBtn.className = baseClasses;
+                
+                slotBtn.innerHTML = `
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <span class="w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]' : 'bg-rose-500'}"></span>
+                        <span class="tracking-tight">${time}</span>
+                    </div>
+                    <span class="text-[10px] font-normal ${isSelected ? 'text-black/80 font-bold' : (isAvailable ? 'text-emerald-400' : 'text-rose-400')}">
+                        ${isAvailable ? 'Disponible' : 'Ocupado'}
+                    </span>
+                `;
+
+                if (isAvailable) {
+                    slotBtn.onclick = () => selectSlot(time);
+                } else {
+                    slotBtn.onclick = () => {
+                        showToast("Hora Ocupada", `El bloque de las ${time} no está disponible.`, "error");
+                    };
+                }
+
+                container.appendChild(slotBtn);
+            });
+
+            if (isAdminLoggedIn) {
+                renderAdminControlGrid();
+            }
+        }
+
+        // SELECCIONAR HORA
+        function selectSlot(time) {
+            selectedTime = time;
+            document.getElementById('formDisplayTime').value = time;
+            renderSlots();
+            showToast("Hora Seleccionada", `Has marcado el bloque de las ${time}`, "success");
+        }
+
+        // SELECCIONAR SERVICIO DESDE EL CATÁLOGO
+        function selectService(serviceName) {
+            const selectEl = document.getElementById('formService');
+            selectEl.value = serviceName;
+            
+            // Scroll suave hacia el formulario
+            document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
+            showToast("Servicio elegido", `Se seleccionó: ${serviceName}`, "info");
+        }
+
+        // ENVIAR FORMULARIO Y WHATSAPP
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            if (!selectedTime) {
+                showToast("Falta seleccionar hora", "Por favor elige una hora disponible en el calendario.", "error");
+                document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const service = document.getElementById('formService').value;
+            const formattedDate = formatDateSpan(selectedDate);
+
+            // Bloquear la hora recién reservada localmente
+            schedulesByDate[selectedDate][selectedTime] = false;
+
+            // Agregar a la lista reciente en pantalla
+            recentReservations.unshift({
+                name: name,
+                service: service,
+                time: selectedTime,
+                date: formattedDate
+            });
+            renderRecentReservations();
+
+            // Construir mensaje de WhatsApp
+            const message = `Hola FILO BARBER! Quisiera agendar una cita:%0A%0A` +
+                `📌 *Nombre:* ${encodeURIComponent(name)}%0A` +
+                `📞 *Teléfono:* ${encodeURIComponent(phone)}%0A` +
+                `✂️ *Servicio:* ${encodeURIComponent(service)}%0A` +
+                `📅 *Fecha:* ${encodeURIComponent(formattedDate)}%0A` +
+                `⏰ *Hora:* ${encodeURIComponent(selectedTime)}%0A` +
+                `📍 *Sucursal:* Melipilla`;
+
+            // Notificación interna en pantalla
+            showToast("¡Reserva iniciada!", "Abriendo WhatsApp para confirmar con la barbería...", "success");
+
+            // Redirigir a WhatsApp
+            setTimeout(() => {
+                window.open(`https://wa.me/${ADMIN_PHONE}?text=${message}`, '_blank');
+                // Reset selección
+                selectedTime = null;
+                document.getElementById('formDisplayTime').value = "";
+                document.getElementById('bookingForm').reset();
+                updateFormDateDisplay();
+                renderSlots();
+            }, 1200);
+        }
+
+        // RENDER DE RESERVAS RECIENTES
+        function renderRecentReservations() {
+            const container = document.getElementById('recentReservationsList');
+            container.innerHTML = '';
+
+            recentReservations.slice(0, 4).forEach(item => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center bg-neutral-900 p-2.5 rounded-lg border border-neutral-800";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brandGold"></span>
+                        <span class="font-bold text-gray-200">${escapeHtml(item.name)}</span>
+                        <span class="text-gray-500">• ${escapeHtml(item.service)}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-brandGold font-semibold">${escapeHtml(item.time)}</span>
+                        <span class="text-[10px] text-gray-500 block">${escapeHtml(item.date)}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // MODO ADMINISTRADOR (LOGIN Y CONTROL)
+        function toggleAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function authenticateAdmin() {
+            const passInput = document.getElementById('adminPasswordInput');
+            const errorMsg = document.getElementById('adminErrorMsg');
+
+            if (passInput.value === ADMIN_PASS) {
+                isAdminLoggedIn = true;
+                errorMsg.classList.add('hidden');
+                document.getElementById('adminLoginState').classList.add('hidden');
+                document.getElementById('adminPanelState').classList.remove('hidden');
+                document.getElementById('adminBtnText').textContent = "Admin Activado";
+                renderAdminControlGrid();
+                showToast("Modo Admin", "Has iniciado sesión como Administrador", "success");
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminLoginState').classList.remove('hidden');
+            document.getElementById('adminPanelState').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = "";
+            document.getElementById('adminBtnText').textContent = "Modo Admin";
+            renderSlots();
+            showToast("Sesión cerrada", "Modo Administrador desactivado", "info");
+        }
+
+        function renderAdminControlGrid() {
+            const container = document.getElementById('adminSlotsControlGrid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const daySlots = schedulesByDate[selectedDate] || {};
+
+            BASE_TIMES.forEach(time => {
+                const isAvailable = daySlots[time];
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `p-2 rounded-lg text-xs font-bold flex items-center justify-between border transition-all ${
+                    isAvailable 
+                        ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' 
+                        : 'bg-rose-950/60 border-rose-500/50 text-rose-300'
+                }`;
+
+                btn.innerHTML = `
+                    <span>${time}</span>
+                    <span>${isAvailable ? '🟢 Activa' : '🔴 Bloqueada'}</span>
+                `;
+
+                btn.onclick = () => toggleSlotAvailabilityAdmin(time);
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleSlotAvailabilityAdmin(time) {
+            const currentStatus = schedulesByDate[selectedDate][time];
+            schedulesByDate[selectedDate][time] = !currentStatus;
+            
+            if (selectedTime === time && currentStatus) {
+                selectedTime = null;
+                document.getElementById('formDisplayTime').value = "";
+            }
+
+            renderSlots();
+            renderAdminControlGrid();
+            showToast("Estado Modificado", `Hora ${time} cambiada a ${!currentStatus ? 'Disponible 🟢' : 'Bloqueada 🔴'}`, "info");
+        }
+
+        // SISTEMA DE NOTIFICACIONES TOAST
+        let toastTimeout;
+        function showToast(title, message, type = "info") {
+            clearTimeout(toastTimeout);
+            const toast = document.getElementById('toastNotification');
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            if (type === 'success') {
+                iconEl.className = "text-emerald-400 text-xl";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            } else if (type === 'error') {
+                iconEl.className = "text-rose-400 text-xl";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            } else {
+                iconEl.className = "text-brandGold text-xl";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+            }
+
+            toast.classList.remove('translate-y-32', 'opacity-0');
+
+            toastTimeout = setTimeout(() => {
+                hideToast();
+            }, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-y-32', 'opacity-0');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+    </script>
+</body>
+</html>
